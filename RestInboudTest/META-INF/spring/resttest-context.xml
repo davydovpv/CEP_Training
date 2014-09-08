@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:osgi="http://www.springframework.org/schema/osgi"
+       xmlns:wlevs="http://www.bea.com/ns/wlevs/spring"
+       xsi:schemaLocation="
+  http://www.springframework.org/schema/beans
+  http://www.springframework.org/schema/beans/spring-beans.xsd
+  http://www.springframework.org/schema/osgi
+  http://www.springframework.org/schema/osgi/spring-osgi.xsd
+  http://www.bea.com/ns/wlevs/spring
+  http://www.bea.com/ns/wlevs/spring/ocep-epn.xsd">
+
+    <wlevs:event-type-repository>
+        <wlevs:event-type type-name="RestEvent">
+            <wlevs:class>com.bea.wlevs.event.example.resttest.RestEvent</wlevs:class>
+        </wlevs:event-type>
+    </wlevs:event-type-repository>
+
+    <!-- Adapter can be created from a local class, without having to go through a adapter factory -->
+
+    <wlevs:channel id="restTestInputChannel" event-type="RestEvent" >
+        <wlevs:listener ref="restTestProcessor"/>
+        <wlevs:source ref="restInbound"/>
+    </wlevs:channel>
+
+    <wlevs:processor id="restTestProcessor" />
+
+    <wlevs:channel id="restTestOutputChannel" event-type="RestEvent" advertise="true">
+        <wlevs:listener>
+            <bean class="com.bea.wlevs.example.resttest.RestTestSink"/>
+        </wlevs:listener>
+        <wlevs:source ref="restTestProcessor"/>
+    </wlevs:channel>
+    
+    <bean id="jsonMapperBean"
+  class="com.oracle.cep.mappers.jaxb.JAXBMapperFactory"
+  factory-method="create" />
+
+  <wlevs:adapter id="restInbound" provider="rest-inbound">
+<wlevs:instance-property name="jsonMapper" ref="jsonMapperBean" />
+</wlevs:adapter>
+
+</beans>

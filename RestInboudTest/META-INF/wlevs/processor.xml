@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<n1:config xmlns:n1="http://www.bea.com/ns/wlevs/config/application">
+  <processor>
+    <name>restTestProcessor</name>
+    <rules>
+      <query id="restTestRule">
+        <![CDATA[ select * from restTestInputChannel ]]>
+      </query>
+    </rules>
+  </processor>
+  <rest-adapter>
+    <name>restInbound</name>
+    <event-type-name>RestEvent</event-type-name>
+    <context-path>/testhttpadapter</context-path>
+ </rest-adapter>
+ 
+  <json-mapper>
+  <name>jsonMapperBean</name>
+  <event-type-name>RestEvent</event-type-name>
+  <media-type>application/json</media-type>
+</json-mapper>
+</n1:config>
